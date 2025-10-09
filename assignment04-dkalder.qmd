@@ -3,7 +3,7 @@ title: Assignment 04
 author:
   - name: Dakota Alder
     affiliations:
-      - id: bu
+      - id: dkalder
         name: Boston University
         city: Boston
         state: MA
