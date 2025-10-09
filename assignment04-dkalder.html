@@ -230,6 +230,22 @@ only showing top 5 rows</code></pre>
 </div>
 </div>
 <div id="cell-10" class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#---Coefficients and Intercept---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (Used AI to match Coefficient names instead of Feature 1, Feature 2, etc.)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> DataFrame</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>cat_sizes <span class="op">=</span> [regression_df.select(col).distinct().count() <span class="cf">for</span> col <span class="kw">in</span> categorical_columns]</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>expanded_feature_names <span class="op">=</span> [<span class="st">"MIN_YEARS_EXPERIENCE"</span>, <span class="st">"DURATION"</span>, <span class="st">"IS_INTERNSHIP"</span>]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col, size <span class="kw">in</span> <span class="bu">zip</span>(categorical_columns, cat_sizes):</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    expanded_feature_names <span class="op">+=</span> [<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(size)]</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">---Coefficients and Intercept Summary---"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Intercept: </span><span class="sc">{:.4f}</span><span class="st">"</span>.<span class="bu">format</span>(glr_model.intercept))</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Coefficients:"</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, coef <span class="kw">in</span> <span class="bu">enumerate</span>(glr_model.coefficients):</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f" </span><span class="sc">{</span>expanded_feature_names[i]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>coef<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>[Stage 40:&gt;                                                         (0 + 1) / 1]</code></pre>
 </div>
@@ -300,7 +316,7 @@ Length of t-values: 9
 Length of p-values: 9</code></pre>
 </div>
 </div>
-<div id="cell-15" class="cell" data-execution_count="12">
+<div id="cell-15" class="cell">
 <div class="cell-output cell-output-display" data-execution_count="12">
 <table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
@@ -410,6 +426,23 @@ only showing top 5 rows</code></pre>
 </div>
 </div>
 <div id="cell-19" class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co">#---Poly Coefficients and Intercept---</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (Used AI to match Coefficient names instead of Feature 1, Feature 2, etc.)</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql <span class="im">import</span> DataFrame</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>cat_sizes <span class="op">=</span> [regression_df.select(col).distinct().count() <span class="cf">for</span> col <span class="kw">in</span> categorical_columns]</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>poly_expanded_feature_names <span class="op">=</span> [<span class="st">"MIN_YEARS_EXPERIENCE"</span>, <span class="st">"MIN_YEARS_EXPERIENCE_SQ"</span>, <span class="st">"DURATION"</span>, <span class="st">"IS_INTERNSHIP"</span>]</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col, size <span class="kw">in</span> <span class="bu">zip</span>(categorical_columns, cat_sizes):</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    poly_expanded_feature_names <span class="op">+=</span> [<span class="ss">f"</span><span class="sc">{</span>col<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(size)]</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">---Polynomial Coefficient Summary---"</span>)</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Intercept: </span><span class="sc">{:.4f}</span><span class="st">"</span>.<span class="bu">format</span>(poly_glr_min_years_model.intercept))</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Coefficients:"</span>)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, coef <span class="kw">in</span> <span class="bu">enumerate</span>(poly_glr_min_years_model.coefficients):</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f" </span><span class="sc">{</span>poly_expanded_feature_names[i]<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>coef<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>[Stage 65:&gt;                                                         (0 + 1) / 1]</code></pre>
 </div>
@@ -475,7 +508,7 @@ Length of t-values: 10
 Length of p-values: 10</code></pre>
 </div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="19">
+<div id="cell-23" class="cell">
 <div class="cell-output cell-output-display" data-execution_count="19">
 <table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
 <thead>
@@ -585,32 +618,34 @@ Length of importances: 8</code></pre>
 </div>
 </div>
 <div id="cell-26" class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean_feature_name(feature_list):</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>    clean_names <span class="op">=</span> []</span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> feature_list:</span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(name, <span class="bu">list</span>):</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>            clean_names.append(<span class="st">", "</span>.join(<span class="bu">str</span>(n) <span class="cf">for</span> n <span class="kw">in</span> name))</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">isinstance</span>(name, <span class="bu">str</span>) <span class="kw">and</span> name.startswith(<span class="st">"["</span>):</span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>            clean_names.append(name.replace(<span class="st">"["</span>,<span class="st">""</span>).replace(<span class="st">"]"</span>, <span class="st">""</span>).replace(<span class="st">"'"</span>, <span class="st">""</span>).replace(<span class="st">"'"</span>,<span class="st">''</span>).strip())</span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>            clean_names.append(<span class="bu">str</span>(name))</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> clean_names</span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>importance_df <span class="op">=</span> pd.DataFrame({</span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Feature"</span>: feature_names,</span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Importance"</span>: importances</span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>}).sort_values(by<span class="op">=</span><span class="st">"Importance"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a>importance_df[<span class="st">"Feature"</span>] <span class="op">=</span> clean_feature_name(importance_df[<span class="st">"Feature"</span>])</span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>sns.barplot(data<span class="op">=</span>importance_df, x<span class="op">=</span><span class="st">"Importance"</span>, y<span class="op">=</span><span class="st">"Feature"</span>, hue<span class="op">=</span><span class="st">"Importance"</span>, palette<span class="op">=</span><span class="st">"mako"</span>, legend<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Top (8) Feature Importances: Random Forest"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Importance"</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Feature"</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"output/rf_feature_importance.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">---Code For Feature Importance Table---"</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean_feature_name(feature_list):</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    clean_names <span class="op">=</span> []</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> feature_list:</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(name, <span class="bu">list</span>):</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>            clean_names.append(<span class="st">", "</span>.join(<span class="bu">str</span>(n) <span class="cf">for</span> n <span class="kw">in</span> name))</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">elif</span> <span class="bu">isinstance</span>(name, <span class="bu">str</span>) <span class="kw">and</span> name.startswith(<span class="st">"["</span>):</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>            clean_names.append(name.replace(<span class="st">"["</span>,<span class="st">""</span>).replace(<span class="st">"]"</span>, <span class="st">""</span>).replace(<span class="st">"'"</span>, <span class="st">""</span>).replace(<span class="st">"'"</span>,<span class="st">''</span>).strip())</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>            clean_names.append(<span class="bu">str</span>(name))</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> clean_names</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>importance_df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Feature"</span>: feature_names,</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Importance"</span>: importances</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>}).sort_values(by<span class="op">=</span><span class="st">"Importance"</span>, ascending<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>importance_df[<span class="st">"Feature"</span>] <span class="op">=</span> clean_feature_name(importance_df[<span class="st">"Feature"</span>])</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>sns.barplot(data<span class="op">=</span>importance_df, x<span class="op">=</span><span class="st">"Importance"</span>, y<span class="op">=</span><span class="st">"Feature"</span>, hue<span class="op">=</span><span class="st">"Importance"</span>, palette<span class="op">=</span><span class="st">"mako"</span>, legend<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Top (8) Feature Importances: Random Forest"</span>, fontsize<span class="op">=</span><span class="dv">14</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>, loc<span class="op">=</span><span class="st">'left'</span>)</span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Importance"</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Feature"</span>, fontsize<span class="op">=</span><span class="dv">12</span>, fontweight<span class="op">=</span><span class="st">'bold'</span>)</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">"output/rf_feature_importance.png"</span>, dpi<span class="op">=</span><span class="dv">300</span>)</span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -624,6 +659,51 @@ Length of importances: 8</code></pre>
 <h1 data-number="6"><span class="header-section-number">6</span> Feature Importance Summary</h1>
 <p>This analysis shows that the Minimum Years Experience is by far the most important feature in predicting salary, with a feature importance score of above .8. After that, there aren’t any features that have a significant impact in my model, though I believe if I had added different categorical features it would have been more interesting.</p>
 <div id="cell-28" class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#---Comparison of all 3 Models: GLR, Polynomial GLR, Random Forest---</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.ml.evaluation <span class="im">import</span> RegressionEvaluator</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pyspark.sql.functions <span class="im">import</span> col, <span class="bu">pow</span>, sqrt, avg</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="co">#---Evaluate all 3 Models---</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>evaluator_r2 <span class="op">=</span> RegressionEvaluator(labelCol<span class="op">=</span><span class="st">"SALARY"</span>, predictionCol<span class="op">=</span><span class="st">"prediction"</span>, metricName<span class="op">=</span><span class="st">"r2"</span>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>residuals_df <span class="op">=</span> summary.predictions.withColumn(<span class="st">"squared_error"</span>, <span class="bu">pow</span>(col(<span class="st">"SALARY"</span>) <span class="op">-</span> col(<span class="st">"prediction"</span>), <span class="dv">2</span>))</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a><span class="co">#GLR</span></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>glr_df <span class="op">=</span> summary.predictions.select(<span class="st">"SALARY"</span>, <span class="st">"prediction"</span>).toPandas().rename(columns<span class="op">=</span>{<span class="st">"prediction"</span>: <span class="st">"GLR"</span>})</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>glr_r2 <span class="op">=</span> evaluator_r2.evaluate(summary.predictions)</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>glr_rmse <span class="op">=</span> residuals_df.select(avg(col(<span class="st">"squared_error"</span>)).alias(<span class="st">"mse"</span>)).select(sqrt(col(<span class="st">"mse"</span>)).alias(<span class="st">"rmse"</span>)).collect()[<span class="dv">0</span>][<span class="st">"rmse"</span>]</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>glr_aic <span class="op">=</span> summary.aic</span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a>glr_bic <span class="op">=</span> <span class="bu">len</span>(summary.coefficientStandardErrors) <span class="op">*</span> np.log(summary.numInstances) <span class="op">+</span> summary.numInstances <span class="op">*</span> np.log(summary.deviance <span class="op">/</span> summary.numInstances)</span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a><span class="co">#Polynomial GLR</span></span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a>poly_df <span class="op">=</span> poly_preds.select(<span class="st">"SALARY"</span>, <span class="st">"prediction"</span>).toPandas().rename(columns<span class="op">=</span>{<span class="st">"prediction"</span>: <span class="st">"Polynomial"</span>})</span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a>poly_r2 <span class="op">=</span> evaluator_r2.evaluate(poly_preds)</span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>poly_rmse <span class="op">=</span> np.sqrt(((poly_df[<span class="st">"SALARY"</span>]<span class="op">-</span>poly_df[<span class="st">"Polynomial"</span>])<span class="op">**</span><span class="dv">2</span>).mean())</span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>poly_aic <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>poly_bic <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a><span class="co">#Random Forest</span></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>rf_df <span class="op">=</span> rf_predictions.select(<span class="st">"SALARY"</span>, <span class="st">"prediction"</span>).toPandas().rename(columns<span class="op">=</span>{<span class="st">"prediction"</span>: <span class="st">"RandomForest"</span>})</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>rf_r2 <span class="op">=</span> evaluator_r2.evaluate(rf_predictions)</span>
+<span id="cb42-30"><a href="#cb42-30" aria-hidden="true" tabindex="-1"></a>rf_rmse <span class="op">=</span> np.sqrt(((rf_df[<span class="st">"SALARY"</span>]<span class="op">-</span>rf_df[<span class="st">"RandomForest"</span>])<span class="op">**</span><span class="dv">2</span>).mean())</span>
+<span id="cb42-31"><a href="#cb42-31" aria-hidden="true" tabindex="-1"></a>rf_aic <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb42-32"><a href="#cb42-32" aria-hidden="true" tabindex="-1"></a>rf_bic <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb42-33"><a href="#cb42-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-34"><a href="#cb42-34" aria-hidden="true" tabindex="-1"></a><span class="co">#Merge for Plotting</span></span>
+<span id="cb42-35"><a href="#cb42-35" aria-hidden="true" tabindex="-1"></a>merged <span class="op">=</span> glr_df.copy()</span>
+<span id="cb42-36"><a href="#cb42-36" aria-hidden="true" tabindex="-1"></a>merged[<span class="st">"Polynomial"</span>] <span class="op">=</span> poly_df[<span class="st">"Polynomial"</span>]</span>
+<span id="cb42-37"><a href="#cb42-37" aria-hidden="true" tabindex="-1"></a>merged[<span class="st">"RandomForest"</span>] <span class="op">=</span> rf_df[<span class="st">"RandomForest"</span>]</span>
+<span id="cb42-38"><a href="#cb42-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-39"><a href="#cb42-39" aria-hidden="true" tabindex="-1"></a><span class="co">#Melt for Plotting</span></span>
+<span id="cb42-40"><a href="#cb42-40" aria-hidden="true" tabindex="-1"></a>plot_df <span class="op">=</span> merged.melt(id_vars<span class="op">=</span><span class="st">"SALARY"</span>, var_name<span class="op">=</span><span class="st">"Model"</span>, value_name<span class="op">=</span><span class="st">"Predicted"</span>)</span>
+<span id="cb42-41"><a href="#cb42-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-42"><a href="#cb42-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">---Predicted Values Table---"</span>)</span>
+<span id="cb42-43"><a href="#cb42-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-44"><a href="#cb42-44" aria-hidden="true" tabindex="-1"></a>plot_df.head()</span>
+<span id="cb42-45"><a href="#cb42-45" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>                                                                                </code></pre>
 </div>
@@ -677,7 +757,7 @@ Length of importances: 8</code></pre>
 </div>
 </div>
 </div>
-<div id="cell-29" class="cell" data-execution_count="28">
+<div id="cell-29" class="cell">
 <div class="cell-output cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
