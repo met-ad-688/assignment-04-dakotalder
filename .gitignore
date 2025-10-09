@@ -198,3 +198,4 @@ data/lightcast_job_postings.csv
 output/glr_summary.csv
 output/poly_min_years_glr_summary.csv
 output/rf_feature_importance.png
+output/model_comparison.png
